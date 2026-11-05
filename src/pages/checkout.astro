@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro'
+import CheckoutForm from '../components/CheckoutForm.tsx'
+---
+<Base title="Checkout — Chora Tea">
+  <h1 class="page-title">Checkout</h1>
+  <div style="max-width: 520px">
+    <CheckoutForm client:load />
+  </div>
+</Base>

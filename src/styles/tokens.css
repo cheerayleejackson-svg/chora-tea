@@ -1,0 +1,55 @@
+/* src/styles/tokens.css */
+:root {
+  color-scheme: light;
+  --on-seal: #FFFFFF;
+  --button-bg: #385618;
+  --button-hover: #263D10;
+  --footer-bg: #253A2B;
+  --footer-text: #FAF8F1;
+  /* ground */
+  --paper: #FAF8F1;
+  --paper-2: #EEECDD;
+  --ink: #253A2B;
+  --ink-soft: #62695B;
+  --line: #DADDD0;
+  --accent: #D37E5F;
+
+  /* brand */
+  --seal: #385618;
+  --seal-deep: #263D10;
+  --gold: #CB9A30;
+
+  /* fruit inks */
+  --peach:#D9744F; --rose:#C24C63; --plum:#7E3149; --hibiscus:#A82843; --longan:#9C5A2A;
+  --pear:#8FAE46; --jade:#2F7A55; --mango:#DD9A2B; --yuzu:#C6A21E; --melon:#5FA778;
+
+  /* per-context ink, set inline via style="--tea-ink: #..." */
+  --tea-ink: var(--peach);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-seal: 'Noto Serif SC', serif;
+
+  --radius: 5px;
+  --shadow: none;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --paper: #232323;
+  --paper-2: #2E2D2B;
+  --ink: #F2EDE5;
+  --ink-soft: #C3BAB0;
+  --line: #595047;
+  --seal: #CDA77F;
+  --seal-deep: #E2BF99;
+  --button-bg: #294B39;
+  --button-hover: #355F48;
+  --on-seal: #F2EDE5;
+  --accent: #CDA77F;
+  --wood-panel: #423329;
+  --wood-edge: #8D6A4B;
+  --footer-bg: #1A211C;
+  --footer-text: #F2EDE5;
+  --hibiscus: #F3A4B2;
+}

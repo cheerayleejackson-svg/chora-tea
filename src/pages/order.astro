@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro'
+import BrandLogo from '../components/BrandLogo.astro'
+const base = import.meta.env.BASE_URL
+---
+<Base title="Order sealed — Chora Tea">
+  <section class="confirm">
+    <BrandLogo size={88} alt="Chora Tea" />
+    <h1>Your order is sealed.</h1>
+    <p>Thank you. This is a demo storefront, so nothing ships — but the pour was lovely.</p>
+    <a class="cta" href={base}>Back to the orchard →</a>
+  </section>
+</Base>
+<style>
+  .confirm { text-align:center; padding: 60px 0; display:grid; justify-items:center; gap:14px; }
+  .confirm h1 { font-size: 40px; }
+  .cta { margin-top: 10px; background: var(--button-bg); color:var(--on-seal); text-decoration:none; padding:13px 22px; border-radius:999px; font-weight:600; }
+</style>

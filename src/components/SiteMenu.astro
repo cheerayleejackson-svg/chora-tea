@@ -1,0 +1,151 @@
+---
+import { shopGroups, exploreLinks } from '../data/navigation'
+const base = import.meta.env.BASE_URL
+---
+<div class="nav-tools">
+  <button class="nav-tool" id="menu-open" aria-label="Open menu" aria-haspopup="dialog" aria-controls="navigation-dialog"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h18M3 12h18M3 19h18"/></svg><span>Menu</span></button>
+  <button class="nav-tool" id="search-open" aria-label="Search teas" aria-haspopup="dialog" aria-controls="navigation-dialog"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>Search</span></button>
+</div>
+<dialog id="navigation-dialog" aria-label="Chora Tea navigation">
+  <div class="navigation-shell">
+    <div class="main-panel" id="main-navigation-panel">
+      <div class="panel-top"><span class="panel-brand">Chora Tea</span><button class="close-navigation" aria-label="Close menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button></div>
+      <nav aria-label="Explore Chora Tea" class="primary-links">
+        <button class="open-subpanel" data-panel="tea" aria-controls="tea-panel" aria-expanded="false">Find a Tea <span aria-hidden="true">›</span></button>
+        {exploreLinks.map(link => <a href={`${base}${link.href}`}>{link.label}</a>)}
+        <button class="open-subpanel" data-panel="story" aria-controls="story-panel" aria-expanded="false">Chora Story <span aria-hidden="true">›</span></button>
+      </nav>
+      <nav class="utility-links" aria-label="Account and help"><a href={`${base}account`}>My Account</a><a href={`${base}help`}>Help Center</a><a href={`${base}shop`}>Shop all teas</a></nav>
+      <p class="panel-note">A little stillness.<br />A lot of character.</p>
+    </div>
+    <section class="sub-panel" id="tea-panel" aria-label="Find a Tea" hidden>
+      <div class="panel-top"><button class="panel-back">Back to menu</button><button class="close-navigation" aria-label="Close menu">Close</button></div>
+      <h2 tabindex="-1">Find a Tea</h2>
+      <a class="shop-all" href={`${base}shop`}>Explore all teas</a>
+      {shopGroups.map(group => <details class="filter-group"><summary>{group.label}</summary><ul>{group.options.map(option => <li><a href={`${base}shop?${group.key}=${option.value}`}>{option.label}</a></li>)}</ul></details>)}
+    </section>
+    <section class="sub-panel" id="story-panel" aria-label="Chora Story" hidden>
+      <div class="panel-top"><button class="panel-back">Back to menu</button><button class="close-navigation" aria-label="Close menu">Close</button></div>
+      <h2 tabindex="-1">Chora Story</h2>
+      <nav class="story-links" aria-label="Discover Chora"><a href={`${base}chora-story`}>Our Story</a><a href={`${base}ingredient-sources`}>Ingredient Sources</a><a href={`${base}sustainability`}>Sustainability</a></nav>
+    </section>
+    <section class="search-panel" aria-label="Search teas" hidden>
+      <div class="panel-top"><span class="panel-brand">Chora Tea</span><button class="close-navigation" aria-label="Close search">Close</button></div>
+      <h2>Find your next cup.</h2>
+      <form action={`${base}shop`} method="get" role="search"><label for="nav-query">Tea name or flavor</label><div class="search-entry"><input id="nav-query" name="query" type="search" placeholder="Try pear, rose, or oolong" /><button type="submit">Search</button></div></form>
+      <p class="search-caption">Explore the collection</p>
+      <nav class="story-links" aria-label="Suggested searches"><a href={`${base}shop?query=rose`}>Rose blends</a><a href={`${base}shop?query=pear`}>Pear blends</a><a href={`${base}shop?variety=green`}>Green tea</a><a href={`${base}shop`}>All teas</a></nav>
+    </section>
+  </div>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#navigation-dialog')!
+  const main = dialog.querySelector<HTMLElement>('.main-panel')!
+  const search = dialog.querySelector<HTMLElement>('.search-panel')!
+  const panels = [...dialog.querySelectorAll<HTMLElement>('.sub-panel')]
+  const triggers = [...dialog.querySelectorAll<HTMLButtonElement>('.open-subpanel')]
+  const mobile = matchMedia('(max-width: 720px)')
+  let active: string | null = null
+  let opener: HTMLElement | null = null
+  let previousOverflow = ''
+  let closing = false
+  const update = () => {
+    panels.forEach(panel => { panel.hidden = panel.id !== `${active}-panel` })
+    triggers.forEach(trigger => trigger.setAttribute('aria-expanded', String(trigger.dataset.panel === active)))
+    dialog.classList.toggle('has-subpanel', active !== null)
+    main.hidden = !search.hidden || (mobile.matches && active !== null)
+  }
+  const open = (event: Event, mode: 'menu' | 'search') => {
+    if (dialog.open || closing) return
+    opener = event.currentTarget as HTMLElement
+    active = null
+    search.hidden = mode !== 'search'
+    update()
+    previousOverflow = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+    dialog.showModal()
+    if (mode === 'search') dialog.querySelector<HTMLInputElement>('#nav-query')!.focus()
+  }
+  const close = () => {
+    if (!dialog.open || closing) return
+    closing = true
+    dialog.classList.add('is-closing')
+    const finish = () => dialog.close()
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) finish()
+    else window.setTimeout(finish, 320)
+  }
+  document.getElementById('menu-open')!.addEventListener('click', event => open(event, 'menu'))
+  document.getElementById('search-open')!.addEventListener('click', event => open(event, 'search'))
+  triggers.forEach(trigger => trigger.addEventListener('click', () => {
+    active = trigger.dataset.panel!
+    update()
+    dialog.querySelector<HTMLElement>(`#${active}-panel h2`)!.focus()
+  }))
+  dialog.querySelectorAll('.panel-back').forEach(button => button.addEventListener('click', () => {
+    const last = active
+    active = null
+    update()
+    triggers.find(trigger => trigger.dataset.panel === last)?.focus()
+  }))
+  dialog.querySelectorAll('.close-navigation').forEach(button => button.addEventListener('click', close))
+  dialog.addEventListener('cancel', event => { event.preventDefault(); close() })
+  dialog.addEventListener('click', event => { if (event.target === dialog) close() })
+  dialog.addEventListener('close', () => {
+    document.documentElement.style.overflow = previousOverflow
+    dialog.classList.remove('is-closing')
+    closing = false
+    opener?.focus()
+  })
+  mobile.addEventListener('change', () => {
+    update()
+    if (dialog.open && active && mobile.matches) dialog.querySelector<HTMLElement>(`#${active}-panel h2`)!.focus()
+  })
+</script>
+<style>
+  .nav-tools { display:flex; gap:16px; }
+  .nav-tool { display:flex; align-items:center; gap:10px; min-width:44px; min-height:44px; border:0; background:none; color:var(--ink); cursor:pointer; padding:0; font:inherit; font-size:12px; }
+  dialog { --panel-width:min(440px,50vw); position:fixed; inset:0 auto 0 0; margin:0; padding:0; width:var(--panel-width); max-width:100%; height:100dvh; max-height:100dvh; border:0; background:var(--paper); color:var(--ink); overflow:hidden; }
+  dialog.has-subpanel { width:calc(var(--panel-width) + var(--panel-width)); }
+  dialog::backdrop { background:rgb(0 0 0 / .48); }
+  .navigation-shell { height:100%; display:flex; }
+  .main-panel, .sub-panel, .search-panel { width:var(--panel-width); flex:0 0 var(--panel-width); min-width:0; height:100%; overflow-y:auto; overscroll-behavior:contain; padding:28px 38px; }
+  .main-panel { position:relative; z-index:1; background:var(--paper); }
+  [hidden] { display:none !important; }
+  .sub-panel { border-left:1px solid var(--line); background:var(--paper-2); }
+  .panel-top { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:36px; }
+  .panel-brand { font-family:var(--font-display); font-size:23px; }
+  .panel-top button { display:flex; align-items:center; min-height:44px; padding:8px; border:0; color:var(--ink-soft); background:none; cursor:pointer; font:inherit; font-size:12px; }
+  .primary-links a, .primary-links button { display:flex; align-items:center; justify-content:space-between; width:100%; padding:15px 0; border:0; background:none; color:var(--ink); font:inherit; font-size:16px; letter-spacing:.04em; text-transform:uppercase; text-decoration:none; cursor:pointer; text-align:left; }
+  .primary-links button span { font-size:24px; color:var(--seal); }
+  a:hover, .primary-links button:hover { color:var(--seal); }
+  .utility-links { display:grid; gap:4px; border-top:1px solid var(--line); margin-top:28px; padding-top:24px; }
+  .utility-links a, .story-links a { display:block; padding:13px 0; text-decoration:none; font-size:15px; }
+  .panel-note { margin-top:36px; color:var(--ink-soft); font-family:var(--font-display); font-size:23px; }
+  h2 { font-size:34px; line-height:1.2; margin:0 0 28px; }
+  .shop-all { display:block; padding:12px 0 24px; text-underline-offset:5px; }
+  .filter-group { border-top:1px solid var(--line); }
+  summary { padding:20px 0; cursor:pointer; font-size:15px; }
+  ul { list-style:none; margin:0; padding:0 0 16px 18px; }
+  li a { display:block; padding:12px 0; color:var(--ink-soft); font-size:14px; text-decoration:none; }
+  .search-entry { display:flex; gap:8px; }
+  .search-entry input { min-width:0; margin:0; border-color:var(--line); }
+  .search-entry button { padding:12px 16px; background:var(--button-bg); color:var(--on-seal); border:0; border-radius:5px; cursor:pointer; }
+  .search-caption { margin-top:32px; color:var(--ink-soft); font-size:13px; }
+  @media(prefers-reduced-motion:no-preference) {
+    dialog { transition:width 460ms cubic-bezier(.22,1,.36,1); }
+    dialog[open] { animation:nav-enter 460ms cubic-bezier(.22,1,.36,1); }
+    dialog[open]::backdrop { animation:shade-enter 460ms ease; }
+    dialog.is-closing { animation:nav-exit 320ms ease forwards; }
+    dialog.is-closing::backdrop { animation:shade-exit 320ms ease forwards; }
+    .sub-panel:not([hidden]) { animation:sub-enter 460ms cubic-bezier(.22,1,.36,1); }
+  }
+  @keyframes nav-enter { from { transform:translateX(-100%); } to { transform:translateX(0); } }
+  @keyframes nav-exit { to { transform:translateX(-100%); } }
+  @keyframes shade-enter { from { opacity:0; } to { opacity:1; } }
+  @keyframes shade-exit { to { opacity:0; } }
+  @keyframes sub-enter { from { transform:translateX(-100%); } to { transform:translateX(0); } }
+  @keyframes mobile-sub-enter { from { transform:translateX(100%); } to { transform:translateX(0); } }
+  @media(max-width:720px) { dialog { --panel-width:min(440px,100vw); } dialog, dialog.has-subpanel { width:var(--panel-width); } .sub-panel { border-left:0; } }
+  @media(max-width:720px) and (prefers-reduced-motion:no-preference) { .sub-panel:not([hidden]) { animation-name:mobile-sub-enter; } }
+  @media(max-width:520px) { .nav-tools { gap:2px; } .nav-tool span { display:none; } .main-panel, .sub-panel, .search-panel { padding:20px 24px; } }
+</style>

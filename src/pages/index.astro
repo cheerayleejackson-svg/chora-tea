@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro'
+import TeaCard from '../components/TeaCard.astro'
+import { teas } from '../data/teas'
+const base = import.meta.env.BASE_URL
+---
+<Base>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Chora Tea · A moment of your own</p>
+      <h1>Find your<br />daily <em>ritual.</em></h1>
+      <p class="lede">Floral, fruity, beautifully full of character. Discover a tea to make the everyday feel a little more considered.</p>
+      <a class="cta" href={`${base}shop`}>Explore the teas <span aria-hidden="true">↗</span></a>
+      <p class="hero-note">From the first leaf to your favorite cup.</p>
+    </div>
+    <figure class="hero-photo">
+      <img src={`${base}photos/triple-rose-complex-black-tea.png`} alt="Pink rosebuds nestled among loose black tea leaves and fruit pieces" width="1254" height="1254" fetchpriority="high" />
+      <figcaption><span>In the details</span><a href={`${base}tea/triple-rose-complex-black-tea`}>Triple Rose Complex Black Tea ↗</a></figcaption>
+    </figure>
+  </section>
+  <section class="featured" aria-labelledby="collection-heading">
+    <div class="section-head"><div><p class="eyebrow">Meet your next favorite</p><h2 id="collection-heading">A fresh perspective on tea.</h2></div><a class="text-link" href={`${base}shop`}>Shop all teas ↗</a></div>
+    <div class="grid">{teas.slice(0,5).map((tea) => <TeaCard tea={tea} />)}</div>
+  </section>
+  <section class="ritual" aria-labelledby="ritual-heading">
+    <img src={`${base}photos/osmanthus-pear-phoenix-oolong.png`} alt="Golden osmanthus blossoms and textured Phoenix oolong leaves" width="1254" height="1254" loading="lazy" />
+    <div class="ritual-copy"><p class="eyebrow">Make room for a little stillness</p><h2 id="ritual-heading">Good things.<br />One cup at a time.</h2><p>The texture of a leaf. The scent as it steeps. That first warm sip. There’s a whole world in the small things.</p><p>Explore oolong, green tea, black tea and herbal blends, and find your own way to pause.</p><a class="text-link" href={`${base}shop`}>Find your blend ↗</a></div>
+  </section>
+</Base>
+<style>
+  .hero { display:grid; grid-template-columns:1fr 1fr; gap:6%; align-items:center; padding:48px 0 72px; }
+  .hero h1 { font-size:clamp(52px,6.5vw,88px); line-height:1.04; margin:24px 0; letter-spacing:-.05em; }
+  .hero h1 em { font-weight:400; color:var(--seal); }
+  .lede { max-width:39ch; font-size:17px; color:var(--ink-soft); line-height:1.8; }
+  .cta { display:inline-flex; gap:38px; align-items:center; margin-top:18px; padding:16px 24px; border-radius:4px; background:var(--button-bg); color:var(--on-seal); text-decoration:none; transition:background .2s; }
+  .cta:hover { background:var(--button-hover); }
+  .hero-note { margin-top:28px; font-size:12px; color:var(--ink-soft); }
+  .hero-photo { margin:0; }
+  .hero-photo > img { width:100%; height:510px; object-fit:cover; border-radius:46% 46% 4px 4px; }
+  figcaption { background:var(--paper-2); padding:18px 20px; display:flex; flex-direction:column; gap:4px; font-size:13px; }
+  figcaption span { font-size:10px; text-transform:uppercase; letter-spacing:.15em; color:var(--ink-soft); }
+  figcaption a { text-decoration:none; }
+  .featured { border-top:1px solid var(--line); padding-top:56px; }
+  .section-head { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:32px; }
+  h2 { font-size:clamp(30px,3.4vw,44px); margin:12px 0 0; line-height:1.15; }
+  .ritual { margin-top:88px; background:var(--paper-2); display:grid; grid-template-columns:1fr 1fr; }
+  .ritual > img { width:100%; height:100%; max-height:530px; object-fit:cover; }
+  .ritual-copy { padding:clamp(28px,5vw,64px); align-self:center; }
+  .ritual-copy > p:not(.eyebrow) { color:var(--ink-soft); line-height:1.8; }
+  .ritual-copy .text-link { display:inline-block; margin-top:16px; }
+  @media(max-width:760px) { .hero { grid-template-columns:1fr; padding:32px 0 44px; gap:32px; } .hero h1 { font-size:60px; } .hero-photo > img { height:380px; } .section-head { align-items:start; flex-direction:column; } .ritual { grid-template-columns:1fr; margin-top:52px; } .ritual > img { max-height:330px; } }
+</style>

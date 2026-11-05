@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro'
+import TeaCard from '../components/TeaCard.astro'
+import { teas } from '../data/teas'
+import { shopGroups } from '../data/navigation'
+---
+<Base title="Find a Tea — Chora Tea">
+  <header class="shop-intro"><h1>Find your kind of tea.</h1><p>Explore by variety, brewing method, or packaging.</p></header>
+  <form class="tea-filters" role="search" aria-label="Find a tea">
+    <label>Search teas<input type="search" name="query" placeholder="Name or flavor" /></label>
+    {shopGroups.map(group => <label>{group.label}<select name={group.key}><option value="">All</option>{group.options.map(option => <option value={option.value}>{option.label}</option>)}</select></label>)}
+    <button type="reset">Clear filters</button>
+  </form>
+  <p class="availability-note">Brewing and packaging details are still being added. Filtered results include only confirmed matches.</p>
+  <p id="results-count" role="status" aria-live="polite">{teas.length} teas</p>
+  <div class="empty-results" id="empty-results" hidden><h2>No confirmed matches yet.</h2><p>Try another selection or clear the filters. Packaging and cold-brew availability are coming soon.</p><button id="empty-reset" type="button">Show all teas</button></div>
+  <div class="grid">{teas.map(tea => <div class="tea-cell" data-id={tea.id}><TeaCard tea={tea} /></div>)}</div>
+  <noscript><p>Interactive filters require JavaScript. You can browse all teas below.</p></noscript>
+</Base>
+<script>
+  import { teas } from '../data/teas'
+  import { shopGroups } from '../data/navigation'
+  import { matchesTea } from '../lib/tea-filters'
+  const form = document.querySelector<HTMLFormElement>('.tea-filters')!
+  const fields = Object.fromEntries(['query', 'variety', 'brew', 'packaging'].map(key => [key, form.elements.namedItem(key) as HTMLInputElement | HTMLSelectElement]))
+  const cells = [...document.querySelectorAll<HTMLElement>('.tea-cell')]
+  const apply = (writeUrl = true) => {
+    const filters = { query: fields.query.value, variety: fields.variety.value, brew: fields.brew.value, packaging: fields.packaging.value }
+    let count = 0
+    cells.forEach(cell => { const tea = teas.find(tea => tea.id === cell.dataset.id)!; cell.hidden = !matchesTea(tea, filters); if (!cell.hidden) count++ })
+    document.getElementById('results-count')!.textContent = `${count} ${count === 1 ? 'tea' : 'teas'}`
+    document.getElementById('empty-results')!.hidden = count !== 0
+    if (writeUrl) {
+      const url = new URL(location.href)
+      Object.entries(filters).forEach(([key, value]) => value ? url.searchParams.set(key, value) : url.searchParams.delete(key))
+      history.replaceState(null, '', url)
+    }
+  }
+  const restore = () => {
+    const params = new URLSearchParams(location.search)
+    fields.query.value = params.get('query') ?? ''
+    shopGroups.forEach(group => { const value = params.get(group.key) ?? ''; fields[group.key].value = group.options.some(option => option.value === value) ? value : '' })
+    apply(false)
+  }
+  form.addEventListener('input', () => apply())
+  form.addEventListener('submit', event => { event.preventDefault(); apply() })
+  form.addEventListener('reset', () => { Object.values(fields).forEach(field => { field.value = '' }); apply() })
+  document.getElementById('empty-reset')!.addEventListener('click', () => form.reset())
+  window.addEventListener('popstate', restore)
+  restore()
+</script>
+<style>
+  .shop-intro { padding:44px 0 24px; }
+  h1 { font-size:clamp(38px,5vw,62px); margin:0 0 18px; }
+  .shop-intro p, .availability-note { color:var(--ink-soft); }
+  .tea-filters { display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr auto; gap:16px; align-items:end; border-bottom:1px solid var(--line); padding-bottom:24px; }
+  .tea-filters label { font-size:13px; margin:0; }
+  .tea-filters input, select { width:100%; min-width:0; height:46px; padding:10px; margin-top:8px; background:var(--paper-2); color:var(--ink); border:1px solid var(--line); border-radius:5px; font:inherit; font-size:15px; }
+  button { min-height:46px; padding:10px 16px; border:1px solid var(--line); background:var(--paper-2); color:var(--ink); border-radius:5px; cursor:pointer; }
+  .availability-note { font-size:13px; max-width:75ch; }
+  #results-count { margin:24px 0; }
+  .empty-results { padding:36px; background:var(--paper-2); }
+  .tea-cell[hidden], .empty-results[hidden] { display:none; }
+  @media(max-width:900px) { .tea-filters { grid-template-columns:1fr 1fr; } }
+  @media(max-width:420px) { .tea-filters { grid-template-columns:1fr; } }
+</style>

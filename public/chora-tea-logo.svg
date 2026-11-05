@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" role="img" aria-labelledby="title description">
+  <title id="title">Chora Tea circular leaf logo</title>
+  <desc id="description">A muted-orange ring with cream Chora Tea lettering, surrounding a slender forest-green leaf.</desc>
+  <circle cx="500" cy="500" r="458" fill="#D37E5F"/>
+  <circle cx="500" cy="500" r="430" fill="none" stroke="#DCAD9B" stroke-width="4"/>
+  <circle cx="500" cy="500" r="322" fill="#EEE9D6"/>
+  <g fill="#EEE9D6" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="78" text-anchor="middle">
+    <text x="0" y="27" transform="translate(217 245) rotate(-48)">C</text>
+    <text x="0" y="27" transform="translate(345 151) rotate(-24)">H</text>
+    <text x="0" y="27" transform="translate(500 119)">O</text>
+    <text x="0" y="27" transform="translate(655 151) rotate(24)">R</text>
+    <text x="0" y="27" transform="translate(783 245) rotate(48)">A</text>
+    <text x="0" y="27" transform="translate(329 844) rotate(27)">T</text>
+    <text x="0" y="27" transform="translate(500 885)">E</text>
+    <text x="0" y="27" transform="translate(671 844) rotate(-27)">A</text>
+  </g>
+  <circle cx="151" cy="500" r="9" fill="#EEE9D6"/>
+  <circle cx="849" cy="500" r="9" fill="#EEE9D6"/>
+  <path d="M 500 228 C 604.55 274 674.25 375 676.8 493 C 679.35 607 625.8 700 544.2 758 C 527.2 770 511.9 781 500 792 C 488.1 781 472.8 770 455.8 758 C 374.2 700 320.65 607 323.2 493 C 325.75 375 395.45 274 500 228 Z" fill="#385618"/>
+  <path d="M 503.4 252 C 430.3 316 415.85 390 462.6 455 C 479.6 479 505.1 500 525.5 523 C 585.85 590 579.9 668 500 766" fill="none" stroke="#EEE9D6" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

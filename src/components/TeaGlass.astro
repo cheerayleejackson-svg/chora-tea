@@ -1,0 +1,18 @@
+---
+import type { Tea } from '../data/teas'
+interface Props { tea: Tea; height?: number }
+const { tea, height = 260 } = Astro.props
+const base = import.meta.env.BASE_URL
+const settled = tea.inStock || tea.price === null ? '' : ' glass--settled'
+---
+<div class={`glass${settled}${tea.naturalPhoto ? ' natural-photo' : ''}`} style={`--tea-ink:${tea.ink}; height:${height}px`}>
+  <img src={`${base}${tea.photo}`} alt={tea.name} loading="lazy" width="480" height={height} />
+  {!tea.inStock && tea.price !== null && <span class="settled-tag">Settled — sold out</span>}
+</div>
+<style>
+  .natural-photo::after { display:none; }
+  .settled-tag {
+    position:absolute; z-index:2; inset:auto 0 12px 0; text-align:center;
+    font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#fff;
+  }
+</style>

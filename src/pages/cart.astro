@@ -1,0 +1,8 @@
+---
+import Base from '../layouts/Base.astro'
+import CartPage from '../components/CartPage.tsx'
+---
+<Base title="Cart — Chora Tea">
+  <h1 class="page-title">Your cart</h1>
+  <CartPage client:load />
+</Base>

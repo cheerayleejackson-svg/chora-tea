@@ -1,0 +1,26 @@
+---
+import { exploreLinks } from '../data/navigation'
+const base = import.meta.env.BASE_URL
+---
+<footer class="foot">
+  <div class="container">
+    <p class="signature">Chora Tea</p>
+    <p>A little stillness. A lot of character.</p>
+    <nav aria-label="Footer navigation">
+      {exploreLinks.map(link => <a href={`${base}${link.href}`}>{link.label}</a>)}
+      <a href={`${base}chora-story`}>Chora Story</a>
+      <a href={`${base}ingredient-sources`}>Ingredient Sources</a>
+      <a href={`${base}sustainability`}>Sustainability</a>
+      <a href={`${base}account`}>My Account</a>
+      <a href={`${base}help`}>Help Center</a>
+    </nav>
+    <p class="fine">A demo storefront. No real orders are placed.</p>
+  </div>
+</footer>
+<style>
+  .foot { margin-top: 80px; padding: 48px 0; background:var(--footer-bg); color:var(--footer-text); }
+  .signature { font-family:var(--font-display); font-size:32px; margin:0; }
+  .fine { font-size: 13px; }
+  nav { display:flex; flex-wrap:wrap; gap:8px 24px; margin:24px 0; }
+  nav a { font-size:14px; padding:10px 0; text-underline-offset:4px; }
+</style>

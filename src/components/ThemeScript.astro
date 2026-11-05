@@ -1,0 +1,33 @@
+<script is:inline>
+  (() => {
+    const key = 'chora-theme';
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    let preference = null;
+    try { preference = localStorage.getItem(key); } catch {}
+    if (preference !== 'dark' && preference !== 'light') preference = null;
+    const apply = () => {
+      const theme = preference || (media.matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = theme;
+      const button = document.getElementById('theme-toggle');
+      if (button) {
+        button.hidden = false;
+        button.setAttribute('aria-pressed', String(theme === 'dark'));
+        button.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+      }
+    };
+    apply(); // Run in the head, before the first paint.
+    document.addEventListener('DOMContentLoaded', apply, { once: true });
+    document.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element) || !event.target.closest('#theme-toggle')) return;
+      preference = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem(key, preference); } catch {}
+      apply();
+    });
+    media.addEventListener('change', () => { if (!preference) apply(); });
+    window.addEventListener('storage', (event) => {
+      if (event.key !== key && event.key !== null) return;
+      preference = event.newValue === 'dark' || event.newValue === 'light' ? event.newValue : null;
+      apply();
+    });
+  })();
+</script>

@@ -1,0 +1,27 @@
+---
+import type { Tea } from '../data/teas'
+import { categoryLabels } from '../data/teas'
+import TeaGlass from './TeaGlass.astro'
+import { formatCents } from '../lib/format'
+interface Props { tea: Tea }
+const { tea } = Astro.props
+const base = import.meta.env.BASE_URL
+---
+<a class="card" href={`${base}tea/${tea.id}`}>
+  <TeaGlass tea={tea} />
+  <div class="meta">
+    <p class="category">{categoryLabels[tea.category]}</p>
+    <h3>{tea.name}</h3>
+    <p class="blurb">{tea.blurb}</p>
+    <p class="price" style={`--tea-ink:${tea.ink}`}>{tea.price === null ? 'Coming soon' : formatCents(tea.price)}</p>
+  </div>
+</a>
+<style>
+  .card { text-decoration:none; color:inherit; display:block; transition: transform .15s ease; }
+  .card:hover { transform: translateY(-4px); }
+  .meta { padding: 18px 0 0; }
+  .category { font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--ink-soft); margin:0 0 8px; }
+  .meta h3 { font-size: 24px; line-height:1.2; margin: 0 0 8px; }
+  .blurb { margin: 0 0 8px; color: var(--ink-soft); font-size: 14px; }
+  .price { margin:14px 0 0; font-weight:500; font-size:13px; color: var(--seal); }
+</style>

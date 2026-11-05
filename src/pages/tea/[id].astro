@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro'
+import TeaGlass from '../../components/TeaGlass.astro'
+import AddToCart from '../../components/AddToCart.tsx'
+import { teas, getTeaById, categoryLabels } from '../../data/teas'
+import { formatCents } from '../../lib/format'
+
+export function getStaticPaths() {
+  return teas.map((tea) => ({ params: { id: tea.id } }))
+}
+const { id } = Astro.params
+const tea = getTeaById(id!)!
+---
+<Base title={`${tea.name} — Chora Tea`}>
+  <article class="product">
+    <TeaGlass tea={tea} height={460} />
+    <div class="detail">
+      <p class="cat" style={`--tea-ink:${tea.ink}`}>{categoryLabels[tea.category]}</p>
+      <h1>{tea.name}</h1>
+      <p class="price" style={`--tea-ink:${tea.ink}`}>{tea.price === null ? 'Coming soon' : formatCents(tea.price)}</p>
+      <p class="desc">{tea.description}</p>
+      {tea.brewing && <p class="brew">Brew · {tea.brewing}</p>}
+      {tea.price === null
+        ? <p class="oos">Not yet available to order.</p>
+        : tea.inStock
+        ? <AddToCart client:load id={tea.id} ink={tea.ink} />
+        : <p class="oos">Settled — currently sold out.</p>}
+    </div>
+  </article>
+</Base>
+
+<style>
+  .product { display:grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items:center; padding: 48px 0; }
+  .cat { text-transform:uppercase; letter-spacing:0.12em; font-size:12px; color:var(--tea-ink); font-weight:600; }
+  .product h1 { font-size:clamp(36px,4vw,54px); line-height:1.12; margin:14px 0 22px; }
+  .price { font-size: 22px; font-weight:600; color:var(--tea-ink); margin:0 0 18px; }
+  .desc { font-size: 17px; color: var(--ink-soft); max-width: 46ch; }
+  .brew { font-size: 14px; color: var(--ink-soft); margin: 14px 0 22px; }
+  .oos { color: var(--ink-soft); font-weight:600; }
+  :global([data-theme='dark']) .cat, :global([data-theme='dark']) .price { color:var(--seal); }
+  @media (max-width: 780px) { .product { grid-template-columns: 1fr; } }
+</style>

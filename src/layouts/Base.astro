@@ -1,0 +1,32 @@
+---
+import '@fontsource/fraunces/400.css'
+import '@fontsource/fraunces/500.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/noto-serif-sc/600.css'
+import '../styles/tokens.css'
+import '../styles/global.css'
+import Nav from '../components/Nav.astro'
+import ThemeScript from '../components/ThemeScript.astro'
+import Footer from '../components/Footer.astro'
+import CartDrawer from '../components/CartDrawer.tsx'
+interface Props { title?: string }
+const { title = 'Chora Tea — Find your daily ritual' } = Astro.props
+const base = import.meta.env.BASE_URL
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <ThemeScript />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Find your daily ritual with Chora Tea. Explore floral, fruity, oolong, green, black and herbal tea blends." />
+    <link rel="icon" type="image/svg+xml" href={`${base}chora-tea-logo.svg`} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="container"><Nav /></div>
+    <main class="container"><slot /></main>
+    <Footer />
+    <CartDrawer client:load />
+  </body>
+</html>
